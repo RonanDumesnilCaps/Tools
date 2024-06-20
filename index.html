@@ -7,10 +7,15 @@
     <title>Matrice de Devis</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <style>
+        .hidden { display: none; }
+    </style>
 </head>
 
 <body class="bg-gray-100 p-4">
     <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-4">Devis pour la post-production d'un film</h1>
+
         <div class="mb-4">
             <label for="quoteNumber" class="block text-sm font-medium text-gray-700">Numéro de Devis</label>
             <input type="text" id="quoteNumber" name="quoteNumber" class="mt-1 p-2 block w-full border border-gray-300 rounded-md">
@@ -51,6 +56,7 @@
         </div>
 
         <form id="devisForm">
+            <h2 class="text-xl font-bold mb-4">Devis</h2>
             <table class="w-full mb-6">
                 <thead>
                     <tr class="bg-gray-200">
@@ -107,15 +113,16 @@
             const newRow = document.createElement('tr');
             newRow.innerHTML = `
                 <td class="p-2"><input type="text" name="desc_${descId}" class="w-full border rounded p-1" value="${desc}" readonly></td>
-                <td class="p-2"><input type="number" name="nb_${descId}" class="w-full border rounded p-1" value="1"></td>
+                <td class="p-2"><input type="number" name="nb_${descId}" class="w-full border rounded p-1" value="1" oninput="calculateTotal()"></td>
                 <td class="p-2">U</td>
-                <td class="p-2"><input type="number" name="nbu_${descId}" class="w-full border rounded p-1" value="1"></td>
+                <td class="p-2"><input type="number" name="nbu_${descId}" class="w-full border rounded p-1" value="1" oninput="calculateTotal()"></td>
                 <td class="p-2"><input type="number" name="tarif_${descId}" class="w-full border rounded p-1" value="${tarif}" readonly></td>
-                <td class="p-2"><input type="number" name="remise_${descId}" class="w-full border rounded p-1" value="0"></td>
+                <td class="p-2"><input type="number" name="remise_${descId}" class="w-full border rounded p-1" value="0" oninput="calculateTotal()"></td>
                 <td class="p-2"><input type="text" name="totalht_${descId}" class="w-full border rounded p-1" readonly></td>
                 <td class="p-2"><button type="button" onclick="removeRow(this)" class="bg-red-500 text-white px-2 py-1 rounded">X</button></td>
             `;
             itemsTable.appendChild(newRow);
+            calculateTotal();
         }
 
         function calculateTotal() {
@@ -125,6 +132,6 @@
             let subtotal = 0;
 
             rows.forEach(row => {
-                const nb = parseFloat(row.querySelector('input[name^="nb_"]').value);
-                const nbu = parseFloat(row.querySelector('input[name^="nbu_"]').value);
-                const tarif = parseFloat(row.querySelector('input[name^="tarif_"]').value
+                const nb = parseFloat(row.querySelector('input[name^="nb_"]').value) || 0;
+                const nbu = parseFloat(row.querySelector('input[name^="nbu_"]').value) || 0;
+                const tarif = parseFloat(row.querySelector('input[name^="tarif_"]').value) ||
